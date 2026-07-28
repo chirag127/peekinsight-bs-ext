@@ -1,338 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Context Peek</title>
+  <title>PeekInsight</title>
   <style>
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-      width: 320px;
-      padding: 16px;
-      margin: 0;
-      color: #333;
-    }
-
-    .header {
-      display: flex;
-      align-items: center;
-      margin-bottom: 16px;
-    }
-
-    .logo {
-      width: 32px;
-      height: 32px;
-      margin-right: 12px;
-    }
-
-    .title {
-      font-size: 18px;
-      font-weight: 600;
-      margin: 0;
-    }
-
-    .description {
-      font-size: 14px;
-      line-height: 1.5;
-      color: #555;
-      margin-bottom: 16px;
-    }
-
-    .toggle-container {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 12px;
-      padding: 12px;
-      background-color: #f8f9fa;
-      border-radius: 8px;
-    }
-
-    .toggle-label {
-      font-weight: 500;
-    }
-
-    .toggle {
-      position: relative;
-      display: inline-block;
-      width: 44px;
-      height: 24px;
-    }
-
-    .toggle input {
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
-
-    .slider {
-      position: absolute;
-      cursor: pointer;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: #ccc;
-      transition: .4s;
-      border-radius: 24px;
-    }
-
-    .slider:before {
-      position: absolute;
-      content: "";
-      height: 18px;
-      width: 18px;
-      left: 3px;
-      bottom: 3px;
-      background-color: white;
-      transition: .4s;
-      border-radius: 50%;
-    }
-
-    input:checked+.slider {
-      background-color: #2196F3;
-    }
-
-    input:focus+.slider {
-      box-shadow: 0 0 1px #2196F3;
-    }
-
-    input:checked+.slider:before {
-      transform: translateX(20px);
-    }
-
-    .settings-section {
-      margin-top: 16px;
-    }
-
-    .settings-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      cursor: pointer;
-      padding: 8px 12px;
-      background-color: #f8f9fa;
-      border-radius: 8px;
-      margin-bottom: 8px;
-    }
-
-    .settings-header h2 {
-      font-size: 16px;
-      margin: 0;
-      font-weight: 500;
-    }
-
-    .settings-header .icon {
-      transition: transform 0.3s ease;
-    }
-
-    .settings-header.active .icon {
-      transform: rotate(180deg);
-    }
-
-    .settings-content {
-      display: none;
-      padding: 12px;
-      background-color: #f8f9fa;
-      border-radius: 8px;
-      margin-bottom: 12px;
-    }
-
-    .settings-content.active {
-      display: block;
-    }
-
-    .setting-group {
-      margin-bottom: 12px;
-    }
-
-    .setting-group:last-child {
-      margin-bottom: 0;
-    }
-
-    .setting-label {
-      display: block;
-      font-size: 14px;
-      margin-bottom: 4px;
-      font-weight: 500;
-    }
-
-    .setting-value {
-      display: block;
-      font-size: 12px;
-      color: #666;
-      margin-top: 4px;
-    }
-
-    .range-container {
-      display: flex;
-      align-items: center;
-    }
-
-    .range-input {
-      flex: 1;
-      margin-right: 8px;
-    }
-
-    input[type="range"] {
-      width: 100%;
-      height: 6px;
-      -webkit-appearance: none;
-      background: #ddd;
-      border-radius: 3px;
-      outline: none;
-    }
-
-    input[type="range"]::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 16px;
-      height: 16px;
-      border-radius: 50%;
-      background: #2196F3;
-      cursor: pointer;
-    }
-
-    .range-value {
-      width: 40px;
-      text-align: right;
-      font-weight: 500;
-    }
-
-    select {
-      width: 100%;
-      padding: 6px 8px;
-      border-radius: 4px;
-      border: 1px solid #ddd;
-      background-color: white;
-      font-size: 14px;
-    }
-
-    .footer {
-      font-size: 12px;
-      color: #888;
-      text-align: center;
-      margin-top: 16px;
-      padding-top: 16px;
-      border-top: 1px solid #eee;
-    }
-
-    .footer a {
-      color: #2196F3;
-      text-decoration: none;
-    }
-
-    .footer a:hover {
-      text-decoration: underline;
-    }
-
-    .button-container {
-      display: flex;
-      justify-content: flex-end;
-      margin-top: 12px;
-    }
-
-    .save-button {
-      background-color: #2196F3;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      padding: 6px 12px;
-      font-size: 14px;
-      cursor: pointer;
-      transition: background-color 0.2s;
-    }
-
-    .save-button:hover {
-      background-color: #1976D2;
-    }
-
-    .test-button {
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      padding: 6px 12px;
-      font-size: 14px;
-      cursor: pointer;
-      transition: background-color 0.2s;
-      margin-right: 8px;
-    }
-
-    .test-button:hover {
-      background-color: #388E3C;
-    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;width:300px;background:#fff;color:#1a202c}
+    .top{padding:14px 16px 10px;border-bottom:1px solid #f0f0f0;display:flex;align-items:center;gap:10px}
+    .logo{width:28px;height:28px}
+    .brand{font-size:16px;font-weight:700;color:#6366f1}
+    .version{font-size:10px;color:#a0aec0;align-self:flex-end;margin-bottom:1px}
+    .body{padding:14px 16px}
+    .row{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid #f5f5f5}
+    .row:last-child{border:none}
+    .rlabel{font-size:13px;color:#2d3748}
+    .toggle{position:relative;display:inline-block;width:38px;height:20px}
+    .toggle input{opacity:0;width:0;height:0}
+    .slider{position:absolute;inset:0;background:#cbd5e0;border-radius:20px;cursor:pointer;transition:.2s}
+    .slider:before{content:"";position:absolute;width:14px;height:14px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s}
+    input:checked+.slider{background:#6366f1}
+    input:checked+.slider:before{transform:translateX(18px)}
+    .provider-row{padding:10px 0 4px;display:flex;align-items:center;justify-content:space-between}
+    .plabel{font-size:11px;color:#a0aec0}
+    .pbadge{font-size:11px;font-weight:600;color:#6366f1;background:#eef2ff;padding:2px 8px;border-radius:20px}
+    .footer{padding:10px 16px;border-top:1px solid #f0f0f0;display:flex;justify-content:flex-end}
+    .opts-btn{font-size:12px;color:#6366f1;background:none;border:1px solid #e2e8f0;border-radius:6px;padding:4px 10px;cursor:pointer;transition:.15s}
+    .opts-btn:hover{background:#eef2ff}
+    #summary{padding:10px 16px;font-size:12px;color:#4a5568;line-height:1.5;background:#f7f8fc;border-top:1px solid #f0f0f0;display:none}
+    #summary.show{display:block}
+    .spin{width:18px;height:18px;margin:2px auto;border:2px solid #e2e8f0;border-top-color:#6366f1;border-radius:50%;animation:sp .7s linear infinite}
+    @keyframes sp{to{transform:rotate(360deg)}}
   </style>
 </head>
-
 <body>
-  <div class="header">
-    <img src="icons/icon48.png" alt="Context Peek Logo" class="logo">
-    <h1 class="title">Context Peek</h1>
+  <div class="top">
+    <img src="icons/icon48.png" class="logo" alt="">
+    <span class="brand">PeekInsight</span>
+    <span class="version" id="ver"></span>
   </div>
-
-  <p class="description">
-    Get AI-powered previews when hovering over links. See summaries, read times, and credibility scores without leaving
-    the page.
-  </p>
-
-  <div class="toggle-container">
-    <span class="toggle-label">Enable Context Peek</span>
-    <label class="toggle">
-      <input type="checkbox" id="enableToggle" checked>
-      <span class="slider"></span>
-    </label>
-  </div>
-
-  <div class="settings-section">
-    <div class="settings-header" id="speechSettingsHeader">
-      <h2>Speech Settings</h2>
-      <span class="icon">▼</span>
+  <div class="body">
+    <div class="row">
+      <span class="rlabel">Hover preview</span>
+      <label class="toggle"><input type="checkbox" id="enabled"><span class="slider"></span></label>
     </div>
-    <div class="settings-content" id="speechSettingsContent">
-      <div class="setting-group">
-        <label class="setting-label" for="speechRate">Speed</label>
-        <div class="range-container">
-          <div class="range-input">
-            <input type="range" id="speechRate" min="0.1" max="32" step="0.1" value="1">
-          </div>
-          <span class="range-value" id="speechRateValue">1x</span>
-        </div>
-        <span class="setting-value">Adjust how fast the text is spoken (0.1x to 32x)</span>
-      </div>
-
-      <div class="setting-group">
-        <label class="setting-label" for="speechPitch">Pitch</label>
-        <div class="range-container">
-          <div class="range-input">
-            <input type="range" id="speechPitch" min="0.1" max="2" step="0.1" value="1">
-          </div>
-          <span class="range-value" id="speechPitchValue">1</span>
-        </div>
-        <span class="setting-value">Adjust the pitch of the voice (0.1 to 2)</span>
-      </div>
-
-      <div class="setting-group">
-        <label class="setting-label" for="speechVoice">Voice</label>
-        <select id="speechVoice">
-          <option value="">Default Voice</option>
-          <!-- Voice options will be populated by JavaScript -->
-        </select>
-        <span class="setting-value">Select a voice for text-to-speech</span>
-      </div>
-
-      <div class="button-container">
-        <button class="test-button" id="testSpeech">Test</button>
-        <button class="save-button" id="saveSpeechSettings">Save</button>
-      </div>
+    <div class="row">
+      <span class="rlabel">AI enhancement</span>
+      <label class="toggle"><input type="checkbox" id="aiEnabled"><span class="slider"></span></label>
+    </div>
+    <div class="provider-row">
+      <span class="plabel">Active provider</span>
+      <span class="pbadge" id="providerBadge">Pollinations</span>
     </div>
   </div>
-
+  <div id="summary"></div>
   <div class="footer">
-    <p>Made with ❤️ by <a href="https://github.com/chirag127" target="_blank">Chirag Singhal</a></p>
+    <button class="opts-btn" id="openOpts">Settings</button>
   </div>
-
   <script src="popup.js"></script>
 </body>
-
 </html>
